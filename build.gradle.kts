@@ -20,7 +20,7 @@ repositories {
 intellij {
     type.set("PC")
     version.set("2022.2.5")
-    plugins.set(listOf())
+    plugins.set(listOf("PythonCore"))
 }
 
 // Gradle Changelog Plugin

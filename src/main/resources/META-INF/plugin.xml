@@ -1,10 +1,10 @@
 <!-- 插件配置文件：https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
 
-    <id>cn.aixcyi.templugin</id>
-    <name>Plugin Template</name>
+    <id>cn.aixcyi.dunderall</id>
+    <name>HooTool - Python Dunder All</name>
     <vendor email="75880483+aixcyi@users.noreply.github.com" url="https://github.com/aixcyi">aixcyi</vendor>
-    <resource-bundle>messages.PluginTemplate</resource-bundle>
+    <resource-bundle>messages.PythonDunderAll</resource-bundle>
 
     <!-- 插件兼容性要求：https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
@@ -18,7 +18,22 @@
     </extensions>
 
     <!-- action 的 text 中的下划线被转义了，所以需要用双下划线来表示下划线，譬如 "__all__" 要写成 "____all____" -->
-    <actions resource-bundle="messages.PluginTemplate">
+    <actions resource-bundle="messages.PythonDunderAll">
+        <action id="HooTool.DunderAll.Optimize"
+                class="cn.aixcyi.plugin.dunderall.actions.OptimizeDunderAllAction">
+            <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="OptimizeImports"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl shift D"/>
+            <keyboard-shortcut keymap="Mac OS X" first-keystroke="control meta D"/>
+            <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control meta D"/>
+        </action>
+        <action id="HooTool.DunderAll.Create"
+                class="cn.aixcyi.plugin.dunderall.actions.CreateDunderAllAction">
+            <add-to-group group-id="GenerateGroup" anchor="first"/>
+        </action>
+        <action id="HooTool.DunderAll.CreateWithImports"
+                class="cn.aixcyi.plugin.dunderall.actions.CreateDunderAllAction">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="HooTool.DunderAll.Create"/>
+        </action>
     </actions>
 
 </idea-plugin>
