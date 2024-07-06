@@ -1,6 +1,5 @@
 package cn.aixcyi.plugin.dunderall
 
-import com.intellij.DynamicBundle
 import org.jetbrains.annotations.PropertyKey
 import java.util.*
 
@@ -19,8 +18,8 @@ object Zoo {
         const val OPTIMIZATION = "HooTool.DunderAll.Optimization"
     }
 
-    /** 国际化文本资源包。 */
-    private val BUNDLE = ResourceBundle.getBundle("messages.PythonDunderAll", DynamicBundle.getLocale())
+    /** 文本资源包。 */
+    private val BUNDLE = ResourceBundle.getBundle("messages.PythonDunderAll")
 
     /**
      * 获取本地化翻译。

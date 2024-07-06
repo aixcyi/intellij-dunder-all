@@ -19,7 +19,7 @@
     </extensions>
 
     <!-- action 的 text 中的下划线被转义了，所以需要用双下划线来表示下划线，譬如 "__all__" 要写成 "____all____" -->
-    <actions resource-bundle="messages.PythonDunderAll">
+    <actions>
         <action id="HooTool.DunderAll.Optimize"
                 class="cn.aixcyi.plugin.dunderall.actions.OptimizeDunderAllAction">
             <add-to-group group-id="CodeFormatGroup" anchor="after" relative-to-action="OptimizeImports"/>
