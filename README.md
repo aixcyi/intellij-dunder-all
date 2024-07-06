@@ -1,4 +1,4 @@
 # HooTool - Python Dunder All
 
-This is a IntelliJ platform base plugin.  
-这是一个基于 IntelliJ 平台 IDE 的插件。
+提供生成及格式化 `__all__` 的能力。  
+Allow you to generate variable named `__all__` and format its value.
