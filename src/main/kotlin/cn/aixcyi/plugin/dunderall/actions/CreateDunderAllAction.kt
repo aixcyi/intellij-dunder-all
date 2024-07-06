@@ -38,7 +38,6 @@ class CreateDunderAllAction : AnAction() {
     override fun update(event: AnActionEvent) {
         // 如果不在 Python 文件中则禁用菜单
         event.presentation.isEnabled = event.getPyFile() != null
-        println(event.getPyFile())
     }
 
     override fun actionPerformed(event: AnActionEvent) {

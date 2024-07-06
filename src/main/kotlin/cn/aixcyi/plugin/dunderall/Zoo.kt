@@ -20,7 +20,7 @@ object Zoo {
     }
 
     /** 国际化文本资源包。 */
-    private val BUNDLE = ResourceBundle.getBundle("messages.TinySnakeBundle", DynamicBundle.getLocale())
+    private val BUNDLE = ResourceBundle.getBundle("messages.PythonDunderAll", DynamicBundle.getLocale())
 
     /**
      * 获取本地化翻译。
