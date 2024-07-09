@@ -1,10 +1,9 @@
 package cn.aixcyi.plugin.dunderall.actions
 
 import cn.aixcyi.plugin.dunderall.Zoo.message
-import cn.aixcyi.plugin.dunderall.entity.SnippetGenerator
-import cn.aixcyi.plugin.dunderall.entity.TopSymbols
 import cn.aixcyi.plugin.dunderall.ui.DunderAllOptimizer
 import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
+import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
 import cn.aixcyi.plugin.dunderall.utils.getEditor
 import cn.aixcyi.plugin.dunderall.utils.getPyFile
 import com.intellij.codeInsight.hint.HintManager
@@ -31,12 +30,12 @@ class OptimizeDunderAllAction : AnAction() {
         val editor = event.getEditor(true) ?: return
         val file = event.getPyFile() ?: return
         val hint = HintManager.getInstance()
-        val dunderAll = DunderAllWrapper(file)
-        if (dunderAll.expression == null) {
+        val wrapper = DunderAllWrapper(file)
+        if (wrapper.expression == null) {
             hint.showInformationHint(editor, message("hint.DunderAllNotFound.text"))
             return
         }
-        if (!dunderAll.isValidAssignment()) {
+        if (!wrapper.isValidAssignment()) {
             hint.showInformationHint(editor, message("hint.InvalidDunderAll.text"))
             return
         }
@@ -46,18 +45,17 @@ class OptimizeDunderAllAction : AnAction() {
         if (!dialog.showAndGet()) return
 
         // 构造优化后的代码
-        val handler = TopSymbols(file)
-        val statement = dunderAll.exports.toMutableList()
-            .apply { handler.sort(this, dialog.state.mySequenceOrder) }
+        val handler = TopSymbolsHandler(file)
+        val symbols = wrapper.exports.toMutableList()
+            .apply { sortWith(handler.getSymbolComparator(dialog.state.mySequenceOrder)) }
             .apply { if (dialog.state.isAutoRemoveNonexistence) handler.remove(this) }
-            .let { SnippetGenerator(file).createStringListLiteral(it, dialog.state) }
 
         // 写入编辑器并产生一个撤销选项
         WriteCommandAction.runWriteCommandAction(
             file.project,
             message("command.OptimizeDunderAll"),
             null,
-            { dunderAll.assignment!!.replace(statement) }
+            { wrapper.reassign(symbols) }
         )
         hint.showInformationHint(editor, message("hint.DunderAllOptimized.text"))
     }

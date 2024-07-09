@@ -33,12 +33,14 @@ object AppIcons {
     /**
      * 载入包内的图标。
      */
+    @Suppress("SameParameterValue")
     @JvmStatic
     private fun load(path: String) = IconLoader.getIcon(path, AppIcons::class.java.classLoader)
 
     /**
      * 将多个图标层叠成一个图标。
      */
+    @Suppress("SameParameterValue")
     @JvmStatic
     private fun loads(vararg icons: Icon) = LayeredIcon(icons.size).also {
         icons.forEachIndexed { layout, icon -> it.setIcon(icon, layout) }
