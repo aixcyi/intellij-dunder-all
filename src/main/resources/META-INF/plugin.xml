@@ -27,13 +27,13 @@
             <keyboard-shortcut keymap="Mac OS X" first-keystroke="control meta D"/>
             <keyboard-shortcut keymap="Mac OS X 10.5+" first-keystroke="control meta D"/>
         </action>
-        <action id="HooTool.DunderAll.Create"
-                class="cn.aixcyi.plugin.dunderall.actions.CreateDunderAllAction">
+        <action id="HooTool.DunderAll.Generate"
+                class="cn.aixcyi.plugin.dunderall.actions.GenerateDunderAllAction">
             <add-to-group group-id="GenerateGroup" anchor="first"/>
         </action>
-        <action id="HooTool.DunderAll.CreateWithImports"
-                class="cn.aixcyi.plugin.dunderall.actions.CreateDunderAllAction">
-            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="HooTool.DunderAll.Create"/>
+        <action id="HooTool.DunderAll.GenerateWithImports"
+                class="cn.aixcyi.plugin.dunderall.actions.GenerateDunderAllAction">
+            <add-to-group group-id="GenerateGroup" anchor="after" relative-to-action="HooTool.DunderAll.Generate"/>
         </action>
     </actions>
 

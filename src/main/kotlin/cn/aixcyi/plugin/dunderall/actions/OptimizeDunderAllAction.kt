@@ -1,10 +1,10 @@
 package cn.aixcyi.plugin.dunderall.actions
 
-import cn.aixcyi.plugin.dunderall.entity.DunderAll
+import cn.aixcyi.plugin.dunderall.Zoo.message
 import cn.aixcyi.plugin.dunderall.entity.SnippetGenerator
 import cn.aixcyi.plugin.dunderall.entity.TopSymbols
 import cn.aixcyi.plugin.dunderall.ui.DunderAllOptimizer
-import cn.aixcyi.plugin.dunderall.Zoo.message
+import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
 import cn.aixcyi.plugin.dunderall.utils.getEditor
 import cn.aixcyi.plugin.dunderall.utils.getPyFile
 import com.intellij.codeInsight.hint.HintManager
@@ -31,7 +31,7 @@ class OptimizeDunderAllAction : AnAction() {
         val editor = event.getEditor(true) ?: return
         val file = event.getPyFile() ?: return
         val hint = HintManager.getInstance()
-        val dunderAll = DunderAll(file)
+        val dunderAll = DunderAllWrapper(file)
         if (dunderAll.expression == null) {
             hint.showInformationHint(editor, message("hint.DunderAllNotFound.text"))
             return
