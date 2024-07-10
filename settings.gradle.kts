@@ -4,3 +4,5 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+rootProject.name = "HooTool-Python-Dunder-All"
