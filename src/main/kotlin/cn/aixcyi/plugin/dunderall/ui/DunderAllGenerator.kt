@@ -33,10 +33,11 @@ import javax.swing.JList
  * @param withImports 是否包含导入的符号。是则递归提取。
  * @author <a href="https://github.com/aixcyi">砹小翼</a>
  */
-class DunderAllGenerator(file: PyFile, withImports: Boolean) : DialogWrapper(true) {
+class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : DialogWrapper(true) {
 
     private val dunderAll = file.dunderAll ?: listOf()
     private val handler = TopSymbolsHandler(file, withImports)
+    private val scopes = handler.symbols.values.toMutableSet()
     private val model = CollectionListModel(handler.symbols.toList())
     private val list = JBList(model)
     private var order = DunderAllOptimization.getInstance().state.mySequenceOrder
@@ -47,8 +48,7 @@ class DunderAllGenerator(file: PyFile, withImports: Boolean) : DialogWrapper(tru
         setCancelButtonText(message("button.Cancel.text"))
         isResizable = true
         title = message("dialog.DunderAllGenerator.title")
-        list.emptyText.appendLine(message("dialog.DunderAllGenerator.empty_text.1"))
-        list.emptyText.appendLine(message("dialog.DunderAllGenerator.empty_text.2"))
+        list.setEmptyText(message("dialog.DunderAllGenerator.empty_text"))
         list.setCellRenderer(object : ColoredListCellRenderer<Pair<String, Icon>>() {
             override fun customizeCellRenderer(
                 list: JList<out Pair<String, Icon>>,
@@ -114,15 +114,41 @@ class DunderAllGenerator(file: PyFile, withImports: Boolean) : DialogWrapper(tru
                 .bind(this)
                 .anchor(DunderAllOptimization.Order.CHARSET)
         )
+        group.addSeparator()
+        group.add(
+            ScopeToggleAction(message("action.ShowClass.text"), "", AllIcons.Nodes.Class)
+                .bind(this)
+        )
+        group.add(
+            ScopeToggleAction(message("action.ShowFunction.text"), "", AllIcons.Nodes.Function)
+                .bind(this)
+        )
+        group.add(
+            ScopeToggleAction(message("action.ShowVariable.text"), "", AllIcons.Nodes.Variable)
+                .bind(this)
+        )
+        if (this.withImports)
+            group.add(
+                ScopeToggleAction(message("action.ShowImports.text"), "", AllIcons.Nodes.Include)
+                    .bind(this)
+            )
         return group
+    }
+
+    private fun updateItems() {
+        val pairs = handler.symbols.toList()
+            .filter { this.scopes.contains(it.second) }
+            .sortedWith(handler.getPairComparator(this.order))
+        this.model.removeAll()
+        this.model.addAll(0, pairs)
     }
 
     /**
      * 排序方式切换事件。
      */
     private class SortingToggleAction(
-        title: String, description: String, icon: Icon
-    ) : ToggleAction(title, description, icon), DumbAware {
+        text: String, description: String, icon: Icon
+    ) : ToggleAction(text, description, icon), DumbAware {
 
         private lateinit var parent: DunderAllGenerator
         private lateinit var target: DunderAllOptimization.Order
@@ -144,12 +170,37 @@ class DunderAllGenerator(file: PyFile, withImports: Boolean) : DialogWrapper(tru
         }
 
         override fun setSelected(e: AnActionEvent, state: Boolean) {
-            if (!state) return
-            val handler = parent.handler
-            val pairs = handler.symbols.toList().sortedWith(handler.getPairComparator(this.target))
+            if (!state)
+                return  // 组合单选，所以不能取消选择
             parent.order = this.target
-            parent.model.removeAll()
-            parent.model.addAll(0, pairs)
+            parent.updateItems()
+        }
+    }
+
+    private class ScopeToggleAction(
+        text: String, description: String, val icon: Icon
+    ) : ToggleAction(text, description, icon), DumbAware {
+
+        private lateinit var parent: DunderAllGenerator
+
+        fun bind(selector: DunderAllGenerator): ScopeToggleAction {
+            this.parent = selector
+            return this
+        }
+
+        override fun getActionUpdateThread() = ActionUpdateThread.BGT
+
+        override fun isSelected(e: AnActionEvent): Boolean {
+            return parent.scopes.contains(this.icon)
+        }
+
+        override fun setSelected(e: AnActionEvent, state: Boolean) {
+            if (state)
+                parent.scopes.add(this.icon)
+            else
+                parent.scopes.remove(this.icon)
+
+            parent.updateItems()
         }
     }
 }
