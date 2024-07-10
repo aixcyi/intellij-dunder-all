@@ -16,6 +16,14 @@ class DunderAllOptimization : SimplePersistentStateComponent<DunderAllOptimizati
         fun getInstance() = service<DunderAllOptimization>()
     }
 
+    class State : BaseState() {
+        var mySequenceOrder by property(Order.APPEARANCE) { it == Order.APPEARANCE }
+        var isUseSingleQuote by property(false)
+        var isEndsWithComma by property(false)
+        var isLineByLine by property(false)
+        var isAutoRemoveNonexistence by property(false)
+    }
+
     /** 序列字面值中各个元素的排序方式。 */
     enum class Order {
 
@@ -29,13 +37,5 @@ class DunderAllOptimization : SimplePersistentStateComponent<DunderAllOptimizati
         CHARSET;
 
         override fun toString() = this.ordinal.toString()  // 从0开始
-    }
-
-    class State : BaseState() {
-        var mySequenceOrder by property(Order.APPEARANCE) { it == Order.APPEARANCE }
-        var isUseSingleQuote by property(false)
-        var isEndsWithComma by property(false)
-        var isLineByLine by property(false)
-        var isAutoRemoveNonexistence by property(false)
     }
 }
