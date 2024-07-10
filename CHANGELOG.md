@@ -1,6 +1,6 @@
 # 更新日志／Changelog
 
-## v1.0.0
+## v1.0.1
 
 正式发布。  
 Officially released.
