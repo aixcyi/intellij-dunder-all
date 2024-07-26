@@ -3,8 +3,8 @@ package cn.aixcyi.plugin.dunderall.ui
 import cn.aixcyi.plugin.dunderall.Zoo.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
-import cn.aixcyi.plugin.dunderall.utils.hFill
-import cn.aixcyi.plugin.dunderall.utils.vFill
+import cn.aixcyi.plugin.dunderall.utils.xFill
+import cn.aixcyi.plugin.dunderall.utils.yFill
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -84,8 +84,8 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
                 .setActionGroup(prepareToolbarActions())
                 .createPanel()
             cell(listPanel)
-                .hFill()
-                .vFill()
+                .xFill()
+                .yFill()
         }
     }
 
