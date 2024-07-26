@@ -1,4 +1,4 @@
-package cn.aixcyi.plugin.dunderall.storage
+package cn.aixcyi.plugin.dunderall.services
 
 import cn.aixcyi.plugin.dunderall.Zoo
 import com.intellij.openapi.components.*

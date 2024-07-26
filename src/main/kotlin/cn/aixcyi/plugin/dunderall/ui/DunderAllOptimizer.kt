@@ -1,7 +1,7 @@
 package cn.aixcyi.plugin.dunderall.ui
 
 import cn.aixcyi.plugin.dunderall.Zoo.message
-import cn.aixcyi.plugin.dunderall.storage.DunderAllOptimization
+import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.mnemonic
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.bind

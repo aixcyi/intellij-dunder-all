@@ -1,6 +1,6 @@
 package cn.aixcyi.plugin.dunderall.utils
 
-import cn.aixcyi.plugin.dunderall.storage.DunderAllOptimization
+import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import com.jetbrains.python.PyNames
 import com.jetbrains.python.psi.*
 import com.jetbrains.python.psi.impl.PyElementGeneratorImpl

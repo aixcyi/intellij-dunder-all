@@ -1,7 +1,7 @@
 package cn.aixcyi.plugin.dunderall.ui
 
 import cn.aixcyi.plugin.dunderall.Zoo.message
-import cn.aixcyi.plugin.dunderall.storage.DunderAllOptimization
+import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
 import cn.aixcyi.plugin.dunderall.utils.hFill
 import cn.aixcyi.plugin.dunderall.utils.vFill

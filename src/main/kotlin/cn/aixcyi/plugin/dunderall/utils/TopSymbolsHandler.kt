@@ -1,7 +1,7 @@
 package cn.aixcyi.plugin.dunderall.utils
 
 import cn.aixcyi.plugin.dunderall.AppIcons
-import cn.aixcyi.plugin.dunderall.storage.DunderAllOptimization.Order
+import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization.Order
 import com.intellij.icons.AllIcons
 import com.jetbrains.python.PyNames
 import com.jetbrains.python.psi.*
