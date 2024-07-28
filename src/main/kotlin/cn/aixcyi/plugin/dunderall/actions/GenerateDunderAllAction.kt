@@ -7,9 +7,9 @@ import cn.aixcyi.plugin.dunderall.utils.getPyFile
 import cn.aixcyi.plugin.dunderall.utils.isEncodingDefine
 import cn.aixcyi.plugin.dunderall.utils.isShebang
 import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
@@ -23,7 +23,7 @@ import com.jetbrains.python.psi.PyStringLiteralExpression
  *
  * @author <a href="https://github.com/aixcyi">砹小翼</a>
  */
-class GenerateDunderAllAction : AnAction() {
+class GenerateDunderAllAction : WritableAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -32,9 +32,7 @@ class GenerateDunderAllAction : AnAction() {
         event.presentation.isEnabled = event.getPyFile() != null
     }
 
-    override fun actionPerformed(event: AnActionEvent) {
-        val file = event.getPyFile() ?: return
-
+    override fun actionPerformed(event: AnActionEvent, editor: Editor, file: PyFile) {
         // <action id="GenerateDunderAllWithImports">
         val isWithImports = event.actionManager.getId(this)!!.lowercase().contains("import")
 
