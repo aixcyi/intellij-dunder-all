@@ -4,20 +4,21 @@ import cn.aixcyi.plugin.dunderall.Zoo.message
 import cn.aixcyi.plugin.dunderall.ui.DunderAllOptimizer
 import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
+import cn.aixcyi.plugin.dunderall.utils.getEditor
 import cn.aixcyi.plugin.dunderall.utils.getPyFile
 import com.intellij.codeInsight.hint.HintManager
 import com.intellij.openapi.actionSystem.ActionUpdateThread
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.command.WriteCommandAction
-import com.intellij.openapi.editor.Editor
-import com.jetbrains.python.psi.PyFile
+import com.intellij.openapi.vfs.ReadonlyStatusHandler
 
 /**
  * 优化 Python 源码中已经存在的 `__all__` 变量的值。
  *
  * @author <a href="https://github.com/aixcyi">砹小翼</a>
  */
-class OptimizeDunderAllAction : WritableAction() {
+class OptimizeDunderAllAction : AnAction() {
 
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
@@ -26,7 +27,15 @@ class OptimizeDunderAllAction : WritableAction() {
         event.presentation.isEnabled = event.getPyFile() != null
     }
 
-    override fun actionPerformed(event: AnActionEvent, editor: Editor, file: PyFile) {
+    override fun actionPerformed(event: AnActionEvent) {
+        val editor = event.getEditor(true) ?: return
+        val file = event.getPyFile() ?: return
+        val status = ReadonlyStatusHandler.getInstance(file.project).ensureFilesWritable(listOf(file.virtualFile))
+        if (status.hasReadonlyFiles()) {
+            HintManager.getInstance().showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
+            return
+        }
+
         val hint = HintManager.getInstance()
         val wrapper = DunderAllWrapper(file)
         if (wrapper.expression == null) {
