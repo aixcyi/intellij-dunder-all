@@ -2,11 +2,11 @@ package cn.aixcyi.plugin.dunderall.ui
 
 import cn.aixcyi.plugin.dunderall.Zoo.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
-import cn.aixcyi.plugin.dunderall.utils.mnemonic
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.bind
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import net.aixcyi.utils.mnemonic
 
 /**
  * `__all__` 格式化设置面板。

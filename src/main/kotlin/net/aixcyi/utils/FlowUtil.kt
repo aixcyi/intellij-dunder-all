@@ -1,4 +1,6 @@
-package cn.aixcyi.plugin.dunderall.utils
+@file:Suppress("unused")
+
+package net.aixcyi.utils
 
 import com.intellij.openapi.diagnostic.thisLogger
 

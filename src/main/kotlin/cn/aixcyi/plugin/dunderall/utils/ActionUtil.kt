@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiComment
 import com.jetbrains.python.psi.PyFile
+import net.aixcyi.utils.eval
 
 object ActionUtil {
     /**
