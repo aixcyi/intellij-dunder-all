@@ -12,23 +12,23 @@ import javax.swing.Icon
  *
  * 类内部手动枚举所有符号，并递归筛选顶层符号。手动枚举是为了让不同类型的符号混合之后保持定义顺序。
  *
- * @param file 要查找的文件。
  * @param withImports 是否包括导入。因为存在 `from xxx import *` 这样的语句，所以搜索导入的话会消耗更多时间和内存。
  * @param depth 解析导入语句时的递归深度。深度低于 `1` 则终止。
  * @author <a href="https://github.com/aixcyi">砹小翼</a>
  */
-class TopSymbolsHandler(
-    file: PyFile,
-    private val withImports: Boolean = false,
-    private val depth: Int = 5,
-) {
+class TopSymbolsHandler(private val withImports: Boolean = false, private val depth: Int = 5) {
+
     private val visitedFiles = mutableSetOf<PyFile>()
 
     /** 文件顶级作用域内定义的所有符号。是否包含导入的符号取决于 [withImports] 。 */
     val symbols = mutableMapOf<String, Icon>()
 
-    init {
+    /** 递归枚举 [file] 内的符号，并初始化 [TopSymbolsHandler.symbols] 。 */
+    fun init(file: PyFile): TopSymbolsHandler {
+        symbols.clear()
+        visitedFiles.clear()
         file.statements.forEach { this.collect(it) }
+        return this
     }
 
     /**
@@ -164,7 +164,7 @@ class TopSymbolsHandler(
             }
         } else {
             // 定义的符号有专属图标，而导入的不一定能识别出来，所以统一为导入的图标。
-            val handler = TopSymbolsHandler(file, withImports, depth - 1)
+            val handler = TopSymbolsHandler(withImports, depth - 1).init(file)
             symbols.putAll(handler.symbols.keys.associateWith { AllIcons.Nodes.Include })
         }
     }

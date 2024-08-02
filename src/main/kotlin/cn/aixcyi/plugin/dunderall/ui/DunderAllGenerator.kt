@@ -37,7 +37,7 @@ import javax.swing.JList
 class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : DialogWrapper(true) {
 
     private val dunderAll = file.dunderAll ?: listOf()
-    private val handler = TopSymbolsHandler(file, withImports)
+    private val handler = TopSymbolsHandler(withImports).init(file)
     private val scopes = handler.symbols.values.toMutableSet()
     private val model = CollectionListModel(handler.symbols.toList())
     private val list = JBList(model)

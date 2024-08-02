@@ -52,7 +52,7 @@ class OptimizeDunderAllAction : AnAction() {
         if (!dialog.showAndGet()) return
 
         // 构造优化后的代码
-        val handler = TopSymbolsHandler(file)
+        val handler = TopSymbolsHandler().init(file)
         val symbols = wrapper.exports.toMutableList()
             .apply { sortWith(handler.getSymbolComparator(dialog.state.mySequenceOrder)) }
             .apply { if (dialog.state.isAutoRemoveNonexistence) handler.remove(this) }
