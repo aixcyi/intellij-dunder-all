@@ -46,7 +46,7 @@ tasks {
     runIde {
         jvmArgs = listOf(
             "-Dfile.encoding=UTF-8",
-            // "-Duser.language=en_US",
+            // "-Duser.language=en",
             // "-XX:+UnlockDiagnosticVMOptions",
         )
     }

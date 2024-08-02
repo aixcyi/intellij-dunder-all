@@ -11,33 +11,7 @@ import com.jetbrains.python.psi.impl.PyExpressionStatementImpl
  */
 class DunderAllWrapper(private val file: PyFile) {
 
-    companion object {
-        /**
-         * 构造仅包含 `string` 的带格式的 `list` 字面值。
-         *
-         * @param strings `list` 中的各个字符串。不必也不能预先添加引号。
-         * @param state 格式化参数。
-         * @return 字面值所对应的字符串。
-         */
-        fun buildStringList(
-            strings: List<String>,
-            state: DunderAllOptimization.State = DunderAllOptimization.getInstance().state
-        ): String {
-            val quote = if (state.isUseSingleQuote) "'" else "\""
-            return if (state.isEndsWithComma)
-                strings.joinToString(
-                    separator = if (state.isLineByLine) "\n" else " ",
-                    postfix = if (state.isLineByLine) "\n]" else "]",
-                    prefix = if (state.isLineByLine) "[\n" else "[",
-                ) { "$quote$it$quote," }
-            else
-                strings.joinToString(
-                    separator = if (state.isLineByLine) ",\n" else ", ",
-                    postfix = if (state.isLineByLine) "\n]" else "]",
-                    prefix = if (state.isLineByLine) "[\n" else "[",
-                ) { "$quote$it$quote" }
-        }
-    }
+    private val optimization = DunderAllOptimization.getInstance().state
 
     /** 通过 `__all__` 导出的所有符号。 */
     val exports = file.dunderAll ?: listOf()
@@ -76,5 +50,27 @@ class DunderAllWrapper(private val file: PyFile) {
         is PyTupleExpression -> true
         // 注意这里判断的是字面值，所以没有其它 sequence 类型。
         else -> false
+    }
+
+    /**
+     * 构造仅包含 `string` 的带格式的 `list` 字面值。
+     *
+     * @param strings `list` 中的各个字符串。不必也不能预先添加引号。
+     * @return 字面值所对应的字符串。
+     */
+    private fun buildStringList(strings: List<String>): String {
+        val quote = if (optimization.isUseSingleQuote) "'" else "\""
+        return if (optimization.isEndsWithComma)
+            strings.joinToString(
+                separator = if (optimization.isLineByLine) "\n" else " ",
+                postfix = if (optimization.isLineByLine) "\n]" else "]",
+                prefix = if (optimization.isLineByLine) "[\n" else "[",
+            ) { "$quote$it$quote," }
+        else
+            strings.joinToString(
+                separator = if (optimization.isLineByLine) ",\n" else ", ",
+                postfix = if (optimization.isLineByLine) "\n]" else "]",
+                prefix = if (optimization.isLineByLine) "[\n" else "[",
+            ) { "$quote$it$quote" }
     }
 }
