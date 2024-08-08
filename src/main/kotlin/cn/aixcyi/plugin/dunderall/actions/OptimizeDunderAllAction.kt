@@ -1,6 +1,6 @@
 package cn.aixcyi.plugin.dunderall.actions
 
-import cn.aixcyi.plugin.dunderall.Zoo.message
+import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.ui.DunderAllOptimizer
 import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler

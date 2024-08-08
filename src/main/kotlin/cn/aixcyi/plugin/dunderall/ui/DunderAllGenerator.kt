@@ -1,6 +1,6 @@
 package cn.aixcyi.plugin.dunderall.ui
 
-import cn.aixcyi.plugin.dunderall.Zoo.message
+import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
 import com.intellij.icons.AllIcons
