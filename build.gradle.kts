@@ -61,6 +61,9 @@ tasks {
             )
         })
     }
+    downloadZipSigner {
+        cli = file("./marketplace-zip-signer-cli.jar")
+    }
     signPlugin {
         certificateChainFile.set(file("./.secret/chain.crt"))
         privateKeyFile.set(file("./.secret/private.pem"))

@@ -1,5 +1,10 @@
 # 更新日志／Changelog
 
+## v1.2.0
+
+- 支持符号细分展示及过滤。  
+  Subdivided symbols type and supported symbols filtering.
+
 ## v1.1.0
 
 - 插入或优化之前检测编辑器是否可写，并提示用户解除只读状态。  

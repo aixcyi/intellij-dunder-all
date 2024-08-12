@@ -4,7 +4,7 @@ import cn.aixcyi.plugin.dunderall.Zoo
 import com.intellij.openapi.components.*
 
 /**
- * `__all__` 格式化设置。
+ * `__all__` 格式化选项（应用级）。
  *
  * @author <a href="https://github.com/aixcyi">砹小翼</a>
  */
@@ -13,7 +13,8 @@ import com.intellij.openapi.components.*
 class DunderAllOptimization : SimplePersistentStateComponent<DunderAllOptimization.State>(State()) {
 
     companion object {
-        fun getInstance() = service<DunderAllOptimization>()
+        @JvmStatic
+        fun getInstance(): DunderAllOptimization = service()
     }
 
     class State : BaseState() {

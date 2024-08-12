@@ -17,6 +17,11 @@
     <!-- 插件实现的扩展：https://plugins.jetbrains.com/docs/intellij/plugin-extensions.html -->
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="cn.aixcyi.plugin.dunderall.services.DunderAllOptimization"/>
+        <projectConfigurable
+                parentId="tools"
+                instance="cn.aixcyi.plugin.dunderall.ui.SymbolsFilterOptionConfigurable"
+                key="configurable.HooTool.DunderAllFilterOption.display_name"
+        />
     </extensions>
 
     <!-- action 的 text 中的下划线被转义了，所以需要用双下划线来表示下划线，譬如 "__all__" 要写成 "____all____" -->

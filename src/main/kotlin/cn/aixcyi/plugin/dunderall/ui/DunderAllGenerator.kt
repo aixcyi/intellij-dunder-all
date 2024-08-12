@@ -1,5 +1,6 @@
 package cn.aixcyi.plugin.dunderall.ui
 
+import cn.aixcyi.plugin.dunderall.AppIcons
 import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
@@ -17,6 +18,7 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.panel
 import com.jetbrains.python.psi.PyFile
+import kotlinx.collections.immutable.toImmutableSet
 import net.aixcyi.utils.AlignX
 import net.aixcyi.utils.AlignY
 import net.aixcyi.utils.align
@@ -38,9 +40,11 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
 
     private val dunderAll = file.dunderAll ?: listOf()
     private val handler = TopSymbolsHandler(withImports).init(file)
-    private val scopes = handler.symbols.values.toMutableSet()
     private val model = CollectionListModel(handler.symbols.toList())
     private val list = JBList(model)
+    private val rawScopes = handler.symbols.values.toImmutableSet()
+    private val currScopes = rawScopes.toMutableSet()
+
     private var order = DunderAllOptimization.getInstance().state.mySequenceOrder
 
     init {
@@ -49,14 +53,14 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
         setCancelButtonText(message("button.Cancel.text"))
         isResizable = true
         title = message("dialog.DunderAllGenerator.title")
-        list.setEmptyText(message("dialog.DunderAllGenerator.empty_text"))
+        list.setEmptyText(message("list.Generic.empty_text"))
         list.setCellRenderer(object : ColoredListCellRenderer<Pair<String, Icon>>() {
             override fun customizeCellRenderer(
                 list: JList<out Pair<String, Icon>>,
                 value: Pair<String, Icon>,
                 index: Int,
                 selected: Boolean,
-                hasFocus: Boolean
+                hasFocus: Boolean,
             ) {
                 this.append(value.first)
                 this.icon = value.second
@@ -100,44 +104,83 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
     private fun prepareToolbarActions(): DefaultActionGroup {
         val group = DefaultActionGroup()
         group.add(
-            SortingToggleAction(message("action.SortByAppearance.text"), "", AllIcons.ObjectBrowser.VisibilitySort)
-                .bind(this)
-                .anchor(DunderAllOptimization.Order.APPEARANCE)
+            SortingToggleAction(
+                message("action.SortByAppearance.text"),
+                AllIcons.ObjectBrowser.VisibilitySort,
+                DunderAllOptimization.Order.APPEARANCE,
+                this,
+            )
         )
         group.add(
-            SortingToggleAction(message("action.SortByAlphabet.text"), "", AllIcons.ObjectBrowser.Sorted)
-                .bind(this)
-                .anchor(DunderAllOptimization.Order.ALPHABET)
+            SortingToggleAction(
+                message("action.SortByAlphabet.text"),
+                AllIcons.ObjectBrowser.Sorted,
+                DunderAllOptimization.Order.ALPHABET,
+                this,
+            )
         )
         group.add(
-            SortingToggleAction(message("action.SortByCharset.text"), "", AllIcons.ObjectBrowser.SortByType)
-                .bind(this)
-                .anchor(DunderAllOptimization.Order.CHARSET)
+            SortingToggleAction(
+                message("action.SortByCharset.text"),
+                AllIcons.ObjectBrowser.SortByType,
+                DunderAllOptimization.Order.CHARSET,
+                this,
+            )
         )
         group.addSeparator()
         group.add(
-            ScopeToggleAction(message("action.ShowClass.text"), "", AllIcons.Nodes.Class)
-                .bind(this)
+            ScopeToggleAction(
+                message("action.ShowClasses.text"),
+                this,
+                AllIcons.Nodes.Class,
+                AppIcons.NonPublicClass,
+            )
         )
         group.add(
-            ScopeToggleAction(message("action.ShowFunction.text"), "", AllIcons.Nodes.Function)
-                .bind(this)
+            ScopeToggleAction(
+                message("action.ShowFunctions.text"),
+                this,
+                AllIcons.Nodes.Function,
+                AppIcons.NonPublicFunction,
+            )
         )
         group.add(
-            ScopeToggleAction(message("action.ShowVariable.text"), "", AllIcons.Nodes.Variable)
-                .bind(this)
+            ScopeToggleAction(
+                message("action.ShowVariables.text"),
+                this,
+                AllIcons.Nodes.Variable,
+                AppIcons.NonPublicVariable,
+            )
+        )
+        group.add(
+            ScopeToggleAction(
+                message("action.ShowConstants.text"),
+                this,
+                AllIcons.Nodes.Constant,
+                AppIcons.NonPublicConstant,
+            )
+        )
+        group.add(
+            ScopeToggleAction(
+                message("action.ShowDunderAttributes.text"),
+                this,
+                AppIcons.DunderVariable,
+            )
         )
         if (this.withImports)
             group.add(
-                ScopeToggleAction(message("action.ShowImports.text"), "", AllIcons.Nodes.Include)
-                    .bind(this)
+                ScopeToggleAction(
+                    message("action.ShowImports.text"),
+                    this,
+                    AllIcons.Nodes.Include,
+                )
             )
         return group
     }
 
     private fun updateItems() {
         val pairs = handler.symbols.toList()
-            .filter { this.scopes.contains(it.second) }
+            .filter { this.currScopes.contains(it.second) }
             .sortedWith(handler.getPairComparator(this.order))
         this.model.removeAll()
         this.model.addAll(0, pairs)
@@ -147,23 +190,13 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
      * 排序方式切换事件。
      */
     private class SortingToggleAction(
-        text: String, description: String, icon: Icon
-    ) : ToggleAction(text, description, icon), DumbAware {
+        text: String,
+        icon: Icon,
+        val target: DunderAllOptimization.Order,
+        val parent: DunderAllGenerator,
+    ) : ToggleAction(text, null, icon), DumbAware {
 
-        private lateinit var parent: DunderAllGenerator
-        private lateinit var target: DunderAllOptimization.Order
-
-        fun bind(selector: DunderAllGenerator): SortingToggleAction {
-            this.parent = selector
-            return this
-        }
-
-        fun anchor(order: DunderAllOptimization.Order): SortingToggleAction {
-            this.target = order
-            return this
-        }
-
-        override fun getActionUpdateThread() = ActionUpdateThread.BGT
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
         override fun isSelected(e: AnActionEvent): Boolean {
             return parent.order == this.target
@@ -177,28 +210,34 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
         }
     }
 
+    /**
+     * 范围选择事件。[icons] 必须提供至少一个元素，用作 [ToggleAction] 的图标。
+     */
     private class ScopeToggleAction(
-        text: String, description: String, val icon: Icon
-    ) : ToggleAction(text, description, icon), DumbAware {
+        text: String,
+        val parent: DunderAllGenerator,
+        vararg icons: Icon,
+    ) : ToggleAction(text, null, icons[0]), DumbAware {
 
-        private lateinit var parent: DunderAllGenerator
+        private val iconSet = icons.toSet()
+        private val isVisible = iconSet.any { it in parent.rawScopes }
 
-        fun bind(selector: DunderAllGenerator): ScopeToggleAction {
-            this.parent = selector
-            return this
+        override fun getActionUpdateThread() = ActionUpdateThread.EDT
+
+        override fun update(e: AnActionEvent) {
+            e.presentation.isVisible = isVisible
+            super.update(e)
         }
 
-        override fun getActionUpdateThread() = ActionUpdateThread.BGT
-
         override fun isSelected(e: AnActionEvent): Boolean {
-            return parent.scopes.contains(this.icon)
+            return iconSet.any { it in parent.currScopes }
         }
 
         override fun setSelected(e: AnActionEvent, state: Boolean) {
             if (state)
-                parent.scopes.add(this.icon)
+                parent.currScopes.addAll(iconSet)
             else
-                parent.scopes.remove(this.icon)
+                parent.currScopes.removeAll(iconSet)
 
             parent.updateItems()
         }

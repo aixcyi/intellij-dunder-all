@@ -24,11 +24,26 @@ object AppIcons {
 
     /** 16x16，PythonPsiApiIcons／icons／com／jetbrains／python／nodes／cyan dot */
     @JvmField
-    val CyanDot: Icon = load("/icons/cyan-dot.svg")
+    val CyanDot = load("/icons/cyan-dot.svg")
+
+    @JvmField
+    val NonPublicClass = loads(AllIcons.Nodes.Class, AllIcons.Nodes.Private)
+
+    @JvmField
+    val NonPublicFunction = loads(AllIcons.Nodes.Function, AllIcons.Nodes.Private)
+
+    @JvmField
+    val NonPublicVariable = loads(AllIcons.Nodes.Variable, AllIcons.Nodes.Private)
+
+    @JvmField
+    val NonPublicConstant = loads(AllIcons.Nodes.Constant, AllIcons.Nodes.Private)
+
+    @JvmField
+    val NonPublicImported = loads(AllIcons.Nodes.Include, AllIcons.Nodes.Private)
 
     /** 16x16。特殊变量（它们都以双下划线开头）。*/
     @JvmField
-    val Variable: Icon = loads(AllIcons.Nodes.Variable, CyanDot)
+    val DunderVariable = loads(AllIcons.Nodes.Variable, CyanDot)
 
     /**
      * 载入包内的图标。
@@ -40,7 +55,6 @@ object AppIcons {
     /**
      * 将多个图标层叠成一个图标。
      */
-    @Suppress("SameParameterValue")
     @JvmStatic
     private fun loads(vararg icons: Icon) = LayeredIcon(icons.size).also {
         icons.forEachIndexed { layout, icon -> it.setIcon(icon, layout) }
