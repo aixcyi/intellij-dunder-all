@@ -103,87 +103,63 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
 
     private fun prepareToolbarActions(): DefaultActionGroup {
         val group = DefaultActionGroup()
-        group.add(
+        // TODO: 将排序从【切换改】为【下拉单选】
+        group.addAll(
             SortingToggleAction(
                 message("action.SortByAppearance.text"),
                 AllIcons.ObjectBrowser.VisibilitySort,
                 DunderAllOptimization.Order.APPEARANCE,
                 this,
-            )
-        )
-        group.add(
+            ),
             SortingToggleAction(
                 message("action.SortByAlphabet.text"),
                 AllIcons.ObjectBrowser.Sorted,
                 DunderAllOptimization.Order.ALPHABET,
                 this,
-            )
-        )
-        group.add(
+            ),
             SortingToggleAction(
                 message("action.SortByCharset.text"),
                 AllIcons.ObjectBrowser.SortByType,
                 DunderAllOptimization.Order.CHARSET,
                 this,
-            )
+            ),
         )
         group.addSeparator()
-        group.add(
-            ScopeToggleAction(
-                message("action.ShowClasses.text"),
-                this,
-                AllIcons.Nodes.Class,
-                AppIcons.NonPublicClass,
-            )
-        )
-        group.add(
+        group.addAll(
+            ScopeToggleAction(message("action.ShowClasses.text"), this, AllIcons.Nodes.Class, AppIcons.NonPublicClass),
             ScopeToggleAction(
                 message("action.ShowFunctions.text"),
                 this,
                 AllIcons.Nodes.Function,
-                AppIcons.NonPublicFunction,
-            )
-        )
-        group.add(
+                AppIcons.NonPublicFunction
+            ),
             ScopeToggleAction(
                 message("action.ShowVariables.text"),
                 this,
                 AllIcons.Nodes.Variable,
-                AppIcons.NonPublicVariable,
-            )
-        )
-        group.add(
+                AppIcons.NonPublicVariable
+            ),
             ScopeToggleAction(
                 message("action.ShowConstants.text"),
                 this,
                 AllIcons.Nodes.Constant,
-                AppIcons.NonPublicConstant,
-            )
-        )
-        group.add(
-            ScopeToggleAction(
-                message("action.ShowDunderAttributes.text"),
-                this,
-                AppIcons.DunderVariable,
-            )
+                AppIcons.NonPublicConstant
+            ),
+            ScopeToggleAction(message("action.ShowDunderAttributes.text"), this, AppIcons.DunderVariable),
         )
         if (this.withImports)
             group.add(
-                ScopeToggleAction(
-                    message("action.ShowImports.text"),
-                    this,
-                    AllIcons.Nodes.Include,
-                )
+                ScopeToggleAction(message("action.ShowImports.text"), this, AllIcons.Nodes.Include)
             )
         return group
     }
 
     private fun updateItems() {
-        val pairs = handler.symbols.toList()
-            .filter { this.currScopes.contains(it.second) }
-            .sortedWith(handler.getPairComparator(this.order))
-        this.model.removeAll()
-        this.model.addAll(0, pairs)
+        this.model.replaceAll(
+            handler.symbols.toList()
+                .filter { this.currScopes.contains(it.second) }
+                .sortedWith(handler.getPairComparator(this.order))
+        )
     }
 
     /**

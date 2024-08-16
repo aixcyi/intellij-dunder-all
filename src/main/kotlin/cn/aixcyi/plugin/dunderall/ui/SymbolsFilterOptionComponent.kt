@@ -33,6 +33,7 @@ class SymbolsFilterOptionComponent(project: Project) {
         options.blacklistVariableName,
     ) {
         checkBox(message("checkbox.ExcludeDunderAttribute.text"))
+            .comment(message("label.WhyCannotContainDunderAll.text"))
             .bindSelected(options::isExcludeDunderAttribute)
         contextHelp(
             PyNames.UNDERSCORED_ATTRIBUTES
@@ -41,9 +42,6 @@ class SymbolsFilterOptionComponent(project: Project) {
                 .joinToString("", "<table>", "</table>") { tuple ->
                     tuple.joinToString("", "<tr>", "</tr>") { "<td>$it</td>" }
                 }
-        )
-        contextHelp(
-            message("label.WhyCannotContainDunderAll.text")
         )
     }
 

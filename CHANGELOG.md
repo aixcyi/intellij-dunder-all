@@ -1,5 +1,12 @@
 # 更新日志／Changelog
 
+## v1.2.1
+
+1. 优化“过滤范围”帮助文本的换行。  
+   Update helping context of "Filter Level" in settings.
+2. 将“排除特殊属性”的帮助信息从按钮改为备注呈现。  
+   Change presentation of helping context of "Exclude dunder attributes" in settings from context button to comment.
+
 ## v1.2.0
 
 1. 支持符号细分展示及过滤。  

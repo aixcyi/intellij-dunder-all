@@ -3,7 +3,7 @@
 
     <id>cn.aixcyi.dunderall</id>
     <name>HooTool - Python Dunder All</name>
-    <vendor email="75880483+aixcyi@users.noreply.github.com" url="https://github.com/aixcyi">aixcyi</vendor>
+    <vendor email="75880483+aixcyi@users.noreply.github.com" url="https://github.com/aixcyi">砹小翼</vendor>
     <resource-bundle>messages.PythonDunderAll</resource-bundle>
 
     <!-- 插件兼容性要求：https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
