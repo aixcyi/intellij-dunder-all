@@ -1,5 +1,10 @@
 # 更新日志／Changelog
 
+## v1.2.2
+
+1. 更新插件描述进行合规。  
+   Updated plugin description.
+
 ## v1.2.1
 
 1. 优化“过滤范围”帮助文本的换行。  
