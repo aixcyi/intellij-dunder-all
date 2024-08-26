@@ -10,9 +10,9 @@ import com.intellij.ui.dsl.builder.LabelPosition
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindValue
 import com.intellij.ui.dsl.builder.panel
-import net.aixcyi.utils.AlignX
-import net.aixcyi.utils.AlignY
-import net.aixcyi.utils.align
+import net.aixcyi.shim.AlignX
+import net.aixcyi.shim.AlignY
+import net.aixcyi.shim.align
 import java.util.*
 import javax.swing.Icon
 import javax.swing.JLabel

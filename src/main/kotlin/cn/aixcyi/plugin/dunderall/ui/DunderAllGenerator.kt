@@ -19,9 +19,9 @@ import com.intellij.ui.components.JBList
 import com.intellij.ui.dsl.builder.panel
 import com.jetbrains.python.psi.PyFile
 import kotlinx.collections.immutable.toImmutableSet
-import net.aixcyi.utils.AlignX
-import net.aixcyi.utils.AlignY
-import net.aixcyi.utils.align
+import net.aixcyi.shim.AlignX
+import net.aixcyi.shim.AlignY
+import net.aixcyi.shim.align
 import javax.swing.Icon
 import javax.swing.JList
 
