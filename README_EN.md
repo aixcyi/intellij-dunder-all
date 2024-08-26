@@ -34,4 +34,5 @@ switch line breaking (between filling line and putting one symbol per line), etc
 ## Links
 
 - [JetBrains Marketplace](https://plugins.jetbrains.com/plugin/24821-hootool--python-dunder-all/)
-- [Issue Tracker \(GitHub\)](https://github.com/aixcyi/intellij-dunder-all/issues)
+- [Main Issue Tracker](https://github.com/aixcyi/intellij-dunder-all/issues/)
+- [Secondary Issue Tracker](https://gitee.com/aixcyi/intellij-dunder-all/issues/)

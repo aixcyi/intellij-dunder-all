@@ -1,5 +1,12 @@
 # 更新日志／Changelog
 
+## v1.2.3
+
+1. 补充有关“过滤范围”的帮助信息；将默认语言更改为英文。  
+   Added help information about "Filter Level"; changed fallback language to English.
+2. 添加“码云”上的问题追踪链接。  
+   Added issues tracker link which on Gitee.
+
 ## v1.2.2
 
 1. 更新插件描述进行合规。  
