@@ -4,6 +4,7 @@ package net.aixcyi.utils
 
 import com.intellij.openapi.diagnostic.thisLogger
 
+
 /**
  * 流程控制相关工具。
  *
@@ -47,4 +48,9 @@ inline fun <R> eval(block: () -> R): R? {
         FlowUtil.LOGGER.debug(e)
         return null
     }
+}
+
+inline fun Boolean?.whenTrue(block: () -> Any): Boolean? {
+    if (this == true) block()
+    return this
 }

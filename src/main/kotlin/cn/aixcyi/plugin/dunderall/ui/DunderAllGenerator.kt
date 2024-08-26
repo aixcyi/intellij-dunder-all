@@ -5,10 +5,7 @@ import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DefaultActionGroup
-import com.intellij.openapi.actionSystem.ToggleAction
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.openapi.ui.ValidationInfo
@@ -24,6 +21,7 @@ import net.aixcyi.shim.AlignY
 import net.aixcyi.shim.align
 import javax.swing.Icon
 import javax.swing.JList
+
 
 /**
  * `__all__` 生成对话框。
@@ -102,56 +100,31 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
     }
 
     private fun prepareToolbarActions(): DefaultActionGroup {
-        val group = DefaultActionGroup()
-        // TODO: 将排序从【切换改】为【下拉单选】
-        group.addAll(
-            SortingToggleAction(
-                message("action.SortByAppearance.text"),
-                AllIcons.ObjectBrowser.VisibilitySort,
-                DunderAllOptimization.Order.APPEARANCE,
-                this,
-            ),
-            SortingToggleAction(
-                message("action.SortByAlphabet.text"),
-                AllIcons.ObjectBrowser.Sorted,
-                DunderAllOptimization.Order.ALPHABET,
-                this,
-            ),
-            SortingToggleAction(
-                message("action.SortByCharset.text"),
-                AllIcons.ObjectBrowser.SortByType,
-                DunderAllOptimization.Order.CHARSET,
-                this,
-            ),
+        // TODO: 将排序从【切换】改为【下拉单选】
+        // @formatter:off
+        val actions = mutableListOf(
+            SortingToggleAction(DunderAllOptimization.Order.APPEARANCE, message("action.SortByAppearance.text"), AllIcons.ObjectBrowser.VisibilitySort),
+            SortingToggleAction(DunderAllOptimization.Order.ALPHABET, message("action.SortByAlphabet.text"), AllIcons.ObjectBrowser.Sorted),
+            SortingToggleAction(DunderAllOptimization.Order.CHARSET, message("action.SortByCharset.text"), AllIcons.ObjectBrowser.SortByType),
+            Separator.create(),
+            ScopeToggleAction(message("action.ShowClasses.text"), AllIcons.Nodes.Class, AppIcons.NonPublicClass),
+            ScopeToggleAction(message("action.ShowFunctions.text"), AllIcons.Nodes.Function, AppIcons.NonPublicFunction),
+            ScopeToggleAction(message("action.ShowVariables.text"), AllIcons.Nodes.Variable, AppIcons.NonPublicVariable),
+            ScopeToggleAction(message("action.ShowConstants.text"), AllIcons.Nodes.Constant, AppIcons.NonPublicConstant),
+            ScopeToggleAction(message("action.ShowDunderAttributes.text"), AppIcons.DunderVariable),
         )
-        group.addSeparator()
-        group.addAll(
-            ScopeToggleAction(message("action.ShowClasses.text"), this, AllIcons.Nodes.Class, AppIcons.NonPublicClass),
-            ScopeToggleAction(
-                message("action.ShowFunctions.text"),
-                this,
-                AllIcons.Nodes.Function,
-                AppIcons.NonPublicFunction
-            ),
-            ScopeToggleAction(
-                message("action.ShowVariables.text"),
-                this,
-                AllIcons.Nodes.Variable,
-                AppIcons.NonPublicVariable
-            ),
-            ScopeToggleAction(
-                message("action.ShowConstants.text"),
-                this,
-                AllIcons.Nodes.Constant,
-                AppIcons.NonPublicConstant
-            ),
-            ScopeToggleAction(message("action.ShowDunderAttributes.text"), this, AppIcons.DunderVariable),
-        )
+        // @formatter:on
         if (this.withImports)
-            group.add(
-                ScopeToggleAction(message("action.ShowImports.text"), this, AllIcons.Nodes.Include)
+            actions.add(
+                ScopeToggleAction(message("action.ShowImports.text"), AllIcons.Nodes.Include),
             )
-        return group
+        actions.forEach {
+            when (it) {
+                is ScopeToggleAction -> it.parent = this
+                is SortingToggleAction -> it.parent = this
+            }
+        }
+        return DefaultActionGroup().apply { addAll(actions) }
     }
 
     private fun updateItems() {
@@ -166,11 +139,12 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
      * 排序方式切换事件。
      */
     private class SortingToggleAction(
+        val target: DunderAllOptimization.Order,
         text: String,
         icon: Icon,
-        val target: DunderAllOptimization.Order,
-        val parent: DunderAllGenerator,
     ) : ToggleAction(text, null, icon), DumbAware {
+
+        lateinit var parent: DunderAllGenerator
 
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
 
@@ -191,12 +165,13 @@ class DunderAllGenerator(file: PyFile, private val withImports: Boolean) : Dialo
      */
     private class ScopeToggleAction(
         text: String,
-        val parent: DunderAllGenerator,
         vararg icons: Icon,
     ) : ToggleAction(text, null, icons[0]), DumbAware {
 
         private val iconSet = icons.toSet()
-        private val isVisible = iconSet.any { it in parent.rawScopes }
+        private val isVisible by lazy { iconSet.any { it in parent.rawScopes } }
+
+        lateinit var parent: DunderAllGenerator
 
         override fun getActionUpdateThread() = ActionUpdateThread.EDT
 

@@ -2,20 +2,22 @@ package cn.aixcyi.plugin.dunderall.actions
 
 import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.ui.DunderAllGenerator
-import cn.aixcyi.plugin.dunderall.utils.*
+import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
 import com.intellij.codeInsight.hint.HintManager
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
+import com.jetbrains.python.PythonFileType
+import com.jetbrains.python.inspections.PyEncodingUtil
 import com.jetbrains.python.psi.PyExpressionStatement
 import com.jetbrains.python.psi.PyFile
 import com.jetbrains.python.psi.PyFromImportStatement
 import com.jetbrains.python.psi.PyStringLiteralExpression
+import net.aixcyi.utils.whenTrue
+
 
 /**
  * 在 Python 文件顶部生成 `__all__` 变量。
@@ -24,22 +26,34 @@ import com.jetbrains.python.psi.PyStringLiteralExpression
  */
 class GenerateDunderAllAction : AnAction() {
 
+    companion object {
+        /**
+         * @see <a href="https://peps.python.org/pep-0263/#defining-the-encoding">PEP 263 - Defining the Encoding</a>
+         * @see [PythonFileType.ENCODING_PATTERN]
+         * @see [PyEncodingUtil]
+         */
+        private val REGEX_ENCODING_DEFINE = "^[ \\t\\f]*#.*?coding[:=][ \\t]*([-_.a-zA-Z0-9]+)".toRegex()
+    }
+
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(event: AnActionEvent) {
         // 如果不在 Python 文件中则禁用菜单
-        event.presentation.isEnabled = event.getPyFile() != null
+        event.presentation.isEnabled = event.getData(CommonDataKeys.PSI_FILE) is PyFile
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        val editor = event.getEditor(true) ?: return
-        val file = event.getPyFile() ?: return
-        val handler = ReadonlyStatusHandler.getInstance(file.project)
-        val status = handler.ensureFilesWritable(listOf(file.virtualFile))
-        if (status.hasReadonlyFiles()) {
-            HintManager.getInstance().showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
-            return
-        }
+        val editor = event.getData(LangDataKeys.EDITOR_EVEN_IF_INACTIVE) ?: return
+        val file = event.getData(CommonDataKeys.PSI_FILE) as? PyFile ?: return
+
+        ReadonlyStatusHandler
+            .getInstance(file.project)
+            .ensureFilesWritable(listOf(file.virtualFile))
+            .hasReadonlyFiles()
+            .whenTrue {
+                HintManager.getInstance().showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
+                return
+            }
 
         // <action id="GenerateDunderAllWithImports">
         val isWithImports = event.actionManager.getId(this)!!.lowercase().contains("import")
@@ -60,7 +74,7 @@ class GenerateDunderAllAction : AnAction() {
             file.project,
             message("command.GenerateDunderAll"),
             null,
-            runnable
+            runnable,
         )
     }
 
@@ -94,5 +108,13 @@ class GenerateDunderAllAction : AnAction() {
             return child
         }
         return file.firstChild
+    }
+
+    private fun PsiComment.isShebang(): Boolean {
+        return this.text.startsWith("#!")
+    }
+
+    private fun PsiComment.isEncodingDefine(): Boolean {
+        return REGEX_ENCODING_DEFINE.containsMatchIn(this.text)
     }
 }

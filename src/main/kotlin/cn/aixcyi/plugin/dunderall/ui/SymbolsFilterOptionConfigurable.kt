@@ -5,6 +5,7 @@ import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
+
 class SymbolsFilterOptionConfigurable(private val project: Project) : SearchableConfigurable {
 
     companion object {

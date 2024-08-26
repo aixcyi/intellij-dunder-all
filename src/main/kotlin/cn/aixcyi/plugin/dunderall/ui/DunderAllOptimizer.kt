@@ -2,11 +2,13 @@ package cn.aixcyi.plugin.dunderall.ui
 
 import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization
+import cn.aixcyi.plugin.dunderall.services.DunderAllOptimization.Order
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.dsl.builder.bind
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import net.aixcyi.utils.mnemonic
+
 
 /**
  * `__all__` 格式化设置面板。
@@ -29,18 +31,15 @@ class DunderAllOptimizer : DialogWrapper(true) {
         group(message("label.DunderAllOptimizerOrdering.text")) {
             buttonsGroup {
                 row {
-                    radioButton(
-                        message("radio.DunderAllOrderByAppearance.text"),
-                        DunderAllOptimization.Order.APPEARANCE
-                    )
+                    radioButton(message("radio.DunderAllOrderByAppearance.text"), Order.APPEARANCE)
                         .mnemonic()
                 }
                 row {
-                    radioButton(message("radio.DunderAllOrderByAlphabet.text"), DunderAllOptimization.Order.ALPHABET)
+                    radioButton(message("radio.DunderAllOrderByAlphabet.text"), Order.ALPHABET)
                         .mnemonic()
                 }
                 row {
-                    radioButton(message("radio.DunderAllOrderByCharacter.text"), DunderAllOptimization.Order.CHARSET)
+                    radioButton(message("radio.DunderAllOrderByCharacter.text"), Order.CHARSET)
                         .mnemonic()
                 }
             }.bind(state::mySequenceOrder)

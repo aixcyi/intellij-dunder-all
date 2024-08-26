@@ -4,14 +4,13 @@ import cn.aixcyi.plugin.dunderall.I18nProvider.message
 import cn.aixcyi.plugin.dunderall.ui.DunderAllOptimizer
 import cn.aixcyi.plugin.dunderall.utils.DunderAllWrapper
 import cn.aixcyi.plugin.dunderall.utils.TopSymbolsHandler
-import cn.aixcyi.plugin.dunderall.utils.getEditor
-import cn.aixcyi.plugin.dunderall.utils.getPyFile
 import com.intellij.codeInsight.hint.HintManager
-import com.intellij.openapi.actionSystem.ActionUpdateThread
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
+import com.jetbrains.python.psi.PyFile
+import net.aixcyi.utils.whenTrue
+
 
 /**
  * 优化 Python 源码中已经存在的 `__all__` 变量的值。
@@ -24,19 +23,23 @@ class OptimizeDunderAllAction : AnAction() {
 
     override fun update(event: AnActionEvent) {
         // 如果不在 Python 文件中则禁用菜单
-        event.presentation.isEnabled = event.getPyFile() != null
+        event.presentation.isEnabled = event.getData(CommonDataKeys.PSI_FILE) is PyFile
     }
 
     override fun actionPerformed(event: AnActionEvent) {
-        val editor = event.getEditor(true) ?: return
-        val file = event.getPyFile() ?: return
-        val status = ReadonlyStatusHandler.getInstance(file.project).ensureFilesWritable(listOf(file.virtualFile))
-        if (status.hasReadonlyFiles()) {
-            HintManager.getInstance().showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
-            return
-        }
-
+        val editor = event.getData(LangDataKeys.EDITOR_EVEN_IF_INACTIVE) ?: return
+        val file = event.getData(CommonDataKeys.PSI_FILE) as? PyFile ?: return
         val hint = HintManager.getInstance()
+
+        ReadonlyStatusHandler
+            .getInstance(file.project)
+            .ensureFilesWritable(listOf(file.virtualFile))
+            .hasReadonlyFiles()
+            .whenTrue {
+                hint.showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
+                return
+            }
+
         val wrapper = DunderAllWrapper(file)
         if (wrapper.expression == null) {
             hint.showInformationHint(editor, message("hint.DunderAllNotFound.text"))

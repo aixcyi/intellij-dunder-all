@@ -18,6 +18,7 @@ import javax.swing.Icon
 import javax.swing.JLabel
 import kotlin.reflect.KMutableProperty0
 
+
 class SymbolsFilterOptionTab(
     val title: String,
     val icon: Icon,

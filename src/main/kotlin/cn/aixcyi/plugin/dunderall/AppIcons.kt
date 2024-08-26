@@ -5,6 +5,7 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.LayeredIcon
 import javax.swing.Icon
 
+
 // 必须 @JvmField 和 @JvmStatic，
 // 否则 plugin.xml／idea-plugin／actions／group.icon 无法读取，
 // 会报

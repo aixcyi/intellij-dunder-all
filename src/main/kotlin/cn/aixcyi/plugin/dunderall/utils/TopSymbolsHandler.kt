@@ -8,6 +8,7 @@ import com.jetbrains.python.PyNames
 import com.jetbrains.python.psi.*
 import javax.swing.Icon
 
+
 /**
  * 文件内的所有顶层符号。
  *
@@ -197,7 +198,7 @@ class TopSymbolsHandler(private val withImports: Boolean = false, private val de
         }
     }
 
-    data class SymbolName(val name: String) {
+    class SymbolName(val name: String) {
         val level: SymbolsFilterOptions.Level =
             if (name.startsWith("__") && name.endsWith("__"))
                 SymbolsFilterOptions.Level.ONLY_PUBLIC
