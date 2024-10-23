@@ -32,6 +32,6 @@
 ## 链接
 
 - [插件市场](https://plugins.jetbrains.com/plugin/24821-hootool--python-dunder-all/)
-- [问题追踪器（GitHub）](https://github.com/aixcyi/intellij-dunder-all/issues/)
-- [问题追踪器（码云）](https://gitee.com/aixcyi/intellij-dunder-all/issues/)
-- [QQ群 418751161](https://qm.qq.com/q/ou4RdUFMTm)
+- [问题追踪（GitHub）](https://github.com/aixcyi/intellij-dunder-all/issues/)
+- [问题追踪（码云）](https://gitee.com/aixcyi/intellij-dunder-all/issues/)
+- [QQ群 699090940](https://qm.qq.com/q/gPK9D7nBOU)

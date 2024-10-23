@@ -1,5 +1,10 @@
 # 更新日志／Changelog
 
+## v1.2.4
+
+- 修复符号黑名单无法保存的问题。  
+  Fixed the problem that the symbol blacklist could not be saved.
+
 ## v1.2.3
 
 1. 补充有关“过滤范围”的帮助信息；将默认语言更改为英文。  

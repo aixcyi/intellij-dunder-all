@@ -17,28 +17,28 @@ class SymbolsFilterOptionComponent(project: Project) {
         message("tab.ClassFilterOptions.title"),
         AllIcons.Nodes.Class,
         options::classFilterLevel,
-        options.blacklistClassName,
+        options::blacklistClassName,
     )
 
     private val tabFunction = SymbolsFilterOptionTab(
         message("tab.FunctionFilterOptions.title"),
         AllIcons.Nodes.Function,
         options::functionFilterLevel,
-        options.blacklistFunctionName,
+        options::blacklistFunctionName,
     )
 
     private val tabImports = SymbolsFilterOptionTab(
         message("tab.ImportsFilterOptions.title"),
         AllIcons.Nodes.Include,
         options::importsFilterLevel,
-        options.blacklistImportsName,
+        options::blacklistImportsName,
     )
 
     private val tabVariable = SymbolsFilterOptionTab(
         message("tab.VariableFilterOptions.title"),
         AllIcons.Nodes.Variable,
         options::variableFilterLevel,
-        options.blacklistVariableName,
+        options::blacklistVariableName,
     ) {
         checkBox(message("checkbox.ExcludeDunderAttribute.text"))
             .comment(message("label.WhyCannotContainDunderAll.text"))
