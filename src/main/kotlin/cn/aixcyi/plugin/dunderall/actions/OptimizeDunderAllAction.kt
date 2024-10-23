@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.vfs.ReadonlyStatusHandler
 import com.jetbrains.python.psi.PyFile
-import net.aixcyi.utils.whenTrue
+import net.aixcyi.utils.ifTrue
 
 
 /**
@@ -35,7 +35,7 @@ class OptimizeDunderAllAction : AnAction() {
             .getInstance(file.project)
             .ensureFilesWritable(listOf(file.virtualFile))
             .hasReadonlyFiles()
-            .whenTrue {
+            .ifTrue {
                 hint.showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
                 return
             }

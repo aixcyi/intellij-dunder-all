@@ -23,10 +23,10 @@ class SymbolsFilterOptionTab(
     val title: String,
     val icon: Icon,
     private val filterLevel: KMutableProperty0<Level>,
-    private val blacklist: MutableSet<String>,
+    private val blacklist: KMutableProperty0<MutableList<String>>,
     private val additions: (Row.() -> Unit)? = null,
 ) {
-    private val model = CollectionListModel(blacklist)
+    private val model = CollectionListModel(blacklist.get())
     private val list = JBList(model).apply { setEmptyText(message("list.Generic.empty_text")) }
     private val levelTextMap = Hashtable<Int, JLabel>(3, 1.0F).apply {
         put(Level.ONLY_PUBLIC.ordinal, JLabel(message("label.FilterLevel.OnlyPublic.text")))
@@ -42,7 +42,7 @@ class SymbolsFilterOptionTab(
             if (input.isNullOrBlank()) {
                 return@setAddAction
             }
-            if (input in blacklist) {
+            if (input in blacklist.get()) {
                 list.selectedIndex = model.getElementIndex(input)
             } else {
                 model.add(input)
@@ -57,7 +57,7 @@ class SymbolsFilterOptionTab(
                 model.getElementAt(list.selectedIndex),
                 null,
             )
-            if (input.isNullOrBlank() || input in blacklist)
+            if (input.isNullOrBlank() || input in blacklist.get())
                 return@setEditAction
             model.setElementAt(input, list.selectedIndex)
         }
@@ -98,14 +98,13 @@ class SymbolsFilterOptionTab(
                 .label(message("label.SymbolsBlacklist.text"), LabelPosition.TOP)
                 .align(AlignX.FILL, AlignY.FILL)
                 .onIsModified {
-                    model.toList().toSet() != blacklist
+                    model.toList() != blacklist.get()
                 }
                 .onReset {
-                    model.replaceAll(blacklist.toList())
+                    model.replaceAll(blacklist.get())
                 }
                 .onApply {
-                    blacklist.clear()
-                    blacklist.addAll(model.toList())
+                    blacklist.set(model.toList())
                 }
         }
     }

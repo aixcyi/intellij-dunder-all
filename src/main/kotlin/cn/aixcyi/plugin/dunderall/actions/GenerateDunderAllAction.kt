@@ -16,7 +16,7 @@ import com.jetbrains.python.psi.PyExpressionStatement
 import com.jetbrains.python.psi.PyFile
 import com.jetbrains.python.psi.PyFromImportStatement
 import com.jetbrains.python.psi.PyStringLiteralExpression
-import net.aixcyi.utils.whenTrue
+import net.aixcyi.utils.ifTrue
 
 
 /**
@@ -50,7 +50,7 @@ class GenerateDunderAllAction : AnAction() {
             .getInstance(file.project)
             .ensureFilesWritable(listOf(file.virtualFile))
             .hasReadonlyFiles()
-            .whenTrue {
+            .ifTrue {
                 HintManager.getInstance().showErrorHint(editor, message("hint.EditorIsNotWritable.text"))
                 return
             }

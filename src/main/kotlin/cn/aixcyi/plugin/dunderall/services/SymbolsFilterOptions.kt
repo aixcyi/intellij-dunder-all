@@ -21,17 +21,17 @@ class SymbolsFilterOptions : SimplePersistentStateComponent<SymbolsFilterOptions
 
     class State : BaseState() {
         var classFilterLevel by property(Level.ONLY_PUBLIC) { it == Level.ONLY_PUBLIC }
-        var blacklistClassName by stringSet()
+        var blacklistClassName by list<String>()
 
         var functionFilterLevel by property(Level.ONLY_PUBLIC) { it == Level.ONLY_PUBLIC }
-        var blacklistFunctionName by stringSet()
+        var blacklistFunctionName by list<String>()
 
         var variableFilterLevel by property(Level.ONLY_PUBLIC) { it == Level.ONLY_PUBLIC }
         var isExcludeDunderAttribute by property(false)
-        var blacklistVariableName by stringSet()
+        var blacklistVariableName by list<String>()
 
         var importsFilterLevel by property(Level.ONLY_PUBLIC) { it == Level.ONLY_PUBLIC }
-        var blacklistImportsName by stringSet()
+        var blacklistImportsName by list<String>()
     }
 
     enum class Level {
