@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package net.aixcyi.utils
 
 import com.intellij.openapi.diagnostic.thisLogger
@@ -50,7 +48,7 @@ inline fun <R> eval(block: () -> R): R? {
     }
 }
 
-inline fun Boolean?.whenTrue(block: () -> Any): Boolean? {
+inline fun Boolean?.ifTrue(block: () -> Any): Boolean? {
     if (this == true) block()
     return this
 }
